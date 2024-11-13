@@ -1,6 +1,6 @@
-# MiniSocial : Un mini réseau social décentralisé
+# MiniSocial : Un mini réseau social 
 
-**MiniSocial** est une application de réseau social décentralisée construite sur Ethereum, avec un smart contract en Solidity. Cette application permet aux utilisateurs de publier, aimer et gérer leurs posts tout en garantissant la sécurité et la transparence de leurs interactions grâce à la blockchain.
+**MiniSocial** est une application de réseau social construite sur Ethereum, avec un smart contract en Solidity. Cette application permet aux utilisateurs de publier, aimer et gérer leurs posts tout en garantissant la sécurité et la transparence de leurs interactions grâce à la blockchain.
 
 ---
 
@@ -84,5 +84,5 @@ Le code du front-end et de l'intégration Web3 a été écrit dans VSCode.
 ![interface3](https://github.com/user-attachments/assets/cbfb577f-8fd3-4125-94f7-5448044c7fdb)
 
 
-**Auteurs**
+### Auteur: 
 Ismail Drief - Développeur et auteur du projet.
