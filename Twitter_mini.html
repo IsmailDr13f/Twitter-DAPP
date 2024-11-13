@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Mini Social - Web3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+    
+    <!-- Sidebar -->
+    <div class="w3-sidebar w3-bar-block" style="width:23%; border-right: 1px solid gray;">
+        <h3 class="w3-bar-item" style="align-items: center;display:flex;justify-content: center;">🐦 Twitspeed</h3>
+        <p style="margin-left: 20px;">Ethereum Account: <span id="account">Loading...</span></p>
+		<hr>
+		<p style="margin-left: 20px;">Status: <span id="status">You're updated 🤗!</span></p>
+    </div>
+    <div class="w3-sidebar w3-bar-block" style="width:25%;right:0;border-left: 1px solid gray;">
+        <h2 class="w3-bar-item">💻 My Posts:</h2>
+        <div style="margin-left: 20px;">
+            <h3>Total Posts</h3>
+            <button onclick="getTotalPosts()">Get Total Posts 📋</button>
+            <p id="totalPosts"></p>
+        </div>
+        <br>
+        <div style="margin-left: 20px;">
+            <h3>Edit Post by index</h3>
+            <label for="postIndex">Post Index:</label>
+            <input type="number" id="postIndex" placeholder="Enter post index">
+            <button onclick="editPost()" style="background-color: #04AA6D;">Edit Post 📝</button>
+        </div>
+        <br>
+        <div style="margin-left: 20px;">
+            <h3>View Spesific Post</h3>
+            <label for="viewPostIndex">Post Index:</label>
+            <input type="number" id="viewPostIndex" placeholder="Enter post index">
+            <button onclick="viewPost()" style="background-color: #3967ff;">View Post 👀</button>
+    
+            <p id="viewedPost"> 
+            </p>
+        </div>
+        
+    </div>
+    <div style="margin-left:25%">
+        <h1 style="margin-right: 20px;">Welcome to Twittspeed 🐦!!</h1>
+        <div>
+            <h3>What's on your mind ✍🏻!!</h3>
+            <textarea id="postMessage" placeholder="Write here..." rows="4" cols="50"></textarea><br>
+            <button onclick="publishPost()" style="background-color: #aeadff;">Publish Post 📬</button>
+        </div>
+        <br>
+        
+        
+        <br>
+        <div>
+            <h3>All Posts</h3>
+            <button onclick="listAllPosts()">Refresh 💫</button>
+            <div id="postList"></div>
+        </div>
+
+        
+    </div>
+    
+    <script type="text/javascript">
+        let contract;
+        let accounts;
+
+        async function loadWeb3() {
+            if (window.ethereum) {
+                try {
+                    window.web3 = new Web3(window.ethereum);
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    accounts = await web3.eth.getAccounts();
+                    updateStatuss(accounts[0]);
+                } catch (error) {
+                    console.error("User denied account access:", error);
+                    updateStatuss("User denied account access");
+                }
+            } else {
+                updateStatus("Non-Ethereum browser detected. Install MetaMask!");
+            }
+        }
+
+        async function loadContract() {
+            const ABI = [
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "dislikePost",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_newMessage",
+				"type": "string"
+			}
+		],
+		"name": "editPost",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "getPost",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getTotalPosts",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "likePost",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "posts",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "message",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "author",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "likes",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "dislikes",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "lastModified",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_message",
+				"type": "string"
+			}
+		],
+		"name": "publishPost",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+];
+
+            const address = '0x5FbDB2315678afecb367f032d93F642f64180aa3';  
+            contract = new web3.eth.Contract(ABI, address);
+        }
+		
+        async function publishPost() {
+            const message = document.getElementById('postMessage').value;
+            await contract.methods.publishPost(message).send({ from: accounts[0] });
+            updateStatus('Post published!');
+        }
+
+        async function likePost(index) {
+        await contract.methods.likePost(index).send({ from: accounts[0] });
+        updateStatus('Post liked!');
+        listAllPosts();  // Refresh posts after liking
+    }
+
+    async function dislikePost(index) {
+        await contract.methods.dislikePost(index).send({ from: accounts[0] });
+        updateStatus('Post disliked!');
+        listAllPosts();  // Refresh posts after disliking
+    }
+
+        async function editPost() {
+            const index = document.getElementById('postIndex').value;
+            const newMessage = prompt("Enter the new message");
+            await contract.methods.editPost(index, newMessage).send({ from: accounts[0] });
+            updateStatus('Post edited!');
+        }
+
+        async function viewPost() {
+            const index = document.getElementById('viewPostIndex').value;
+            const post = await contract.methods.getPost(index).call();
+            document.getElementById('viewedPost').innerText = `Message: ${post[0]}, Author: ${post[1]}, Likes: ${post[2]}, Dislikes: ${post[3]}`;
+        }
+
+        async function getTotalPosts() {
+            const totalPosts = await contract.methods.getTotalPosts().call();
+            document.getElementById('totalPosts').innerText = `Total posts: ${totalPosts}`;
+        }
+
+        async function listAllPosts() {
+            const totalPosts = await contract.methods.getTotalPosts().call();
+            const postListDiv = document.getElementById('postList');
+            postListDiv.innerHTML = '';  // Clear existing list
+            for (let i = 0; i < totalPosts; i++) {
+                const post = await contract.methods.posts(i).call();
+                const postDiv = document.createElement('div');
+                postDiv.innerHTML = ` 
+                                    <div class="w3-container" style="border-radius: 5px;">
+                                    <h2></h2>
+                                
+                                    <div class="w3-card" style="width:60%; margin:10px;border-radius: 5px;">
+                                    <header class="w3-container w3-light-grey" style="height: 50px;display: flex;justify-content: center;align-items: center;">
+                                        <img src="icon.avif" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:40px">
+                                        <p style="">${post[1]}</p>
+                                    </header>
+                                    <div class="w3-container">
+                                        <p>Likes: ${post[2]} | Dislikes: ${post[3]}<br></p>
+                                        <hr>
+                                        <p>Message: ${post[0]}<br></p><br>
+
+                                        <div style="margin: 10px">
+                                        <button class="w3-button w3-block" onclick="likePost(${i})" style="background-color: #36eee0;margin:5px">Like 👍🏼</button>
+                                        <button class="w3-button w3-block" onclick="dislikePost(${i})" style="background-color: #f652a0;margin:5px">Dislike 👎🏼</button>
+                                    </div>
+                                    </div>
+                                    
+                                    
+                                    </div>
+                                </div>`;
+                postListDiv.appendChild(postDiv);
+            }
+        }
+
+        function updateStatus(statusText) {
+            document.getElementById('status').innerText = statusText;
+        }
+
+		function updateStatuss(AText) {
+            document.getElementById('account').innerText = AText;
+        }
+
+        window.onload = async () => {
+            await loadWeb3();
+            await loadContract();
+        }
+    </script>
+</body>
+</html>

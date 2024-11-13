@@ -1,0 +1,120 @@
+/* Style global */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    margin: 10;
+    padding: 10;
+    /*display: flex;
+    justify-content: center;
+    align-items: center;*/
+    min-height: 100vh;
+}
+
+
+.container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 50px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Style des titres */
+h2 {
+    color: #333;
+    text-align: center;
+    margin-left: 10px;
+}
+
+/* Style du formulaire */
+form {
+    display: flex;
+    margin: 100px;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Style des champs de formulaire */
+input[type="text"], input[type="number"], input[type="button"] {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+
+input[type="button"] {
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+input[type="button"]:hover {
+    background-color: #45a049;
+}
+
+/* Liste des posts */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+li .post-header {
+    font-weight: bold;
+}
+
+li .post-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button.dislike {
+    background-color: #dc3545;
+}
+
+button.dislike:hover {
+    background-color: #c82333;
+}
+
+button.edit {
+    background-color: #ffc107;
+}
+
+button.edit:hover {
+    background-color: #e0a800;
+}
+
+button.like {
+    background-color: #28a745;
+}
+
+button.like:hover {
+    background-color: #218838;
+}
